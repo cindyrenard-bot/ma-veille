@@ -11,8 +11,7 @@
 const SUPABASE_URL  = 'https://vyrggwedbkemdcbufbek.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cmdnd2VkYmtlbWRjYnVmYmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMzUzNzYsImV4cCI6MjA5MTkxMTM3Nn0.pQp2ECMoTV4VV5DPCyIAxRqbRvoGZDbYGORu7MBjLwQ';
 
-const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+let supabase = null;
 
 // =====================================================
 // ACCÈS AUX DONNÉES — Supabase
@@ -473,6 +472,14 @@ function escapeHtml(str) {
 // =====================================================
 
 function init() {
+  // Initialisation Supabase ici pour garantir que le CDN est chargé
+  try {
+    const { createClient } = window.supabase;
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch (e) {
+    console.error('Supabase non disponible :', e);
+  }
+
   initModal();
   initFilters();
   initSearch();
