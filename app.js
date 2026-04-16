@@ -11,7 +11,7 @@
 const SUPABASE_URL  = 'https://vyrggwedbkemdcbufbek.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cmdnd2VkYmtlbWRjYnVmYmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMzUzNzYsImV4cCI6MjA5MTkxMTM3Nn0.pQp2ECMoTV4VV5DPCyIAxRqbRvoGZDbYGORu7MBjLwQ';
 
-let supabase = null;
+let db = null;
 
 // =====================================================
 // ACCÈS AUX DONNÉES — Supabase
@@ -21,7 +21,7 @@ let supabase = null;
  * Récupère tous les liens sauvegardés depuis Supabase.
  */
 async function fetchLinks() {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('links')
     .select('*')
     .order('date', { ascending: false });
@@ -34,7 +34,7 @@ async function fetchLinks() {
  * @param {{ url, title, category, notes, image, date }} linkData
  */
 async function insertLink(linkData) {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('links')
     .insert([linkData])
     .select()
@@ -48,7 +48,7 @@ async function insertLink(linkData) {
  * @param {number} id
  */
 async function deleteLink(id) {
-  const { error } = await supabase
+  const { error } = await db
     .from('links')
     .delete()
     .eq('id', id);
@@ -474,8 +474,7 @@ function escapeHtml(str) {
 function init() {
   // Initialisation Supabase ici pour garantir que le CDN est chargé
   try {
-    const { createClient } = window.supabase;
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   } catch (e) {
     console.error('Supabase non disponible :', e);
   }
